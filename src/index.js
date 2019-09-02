@@ -1,6 +1,6 @@
-увуци "./test.js";
-увуци "./testfolder/hoho.js";
-увуци "./testfolder/test2.js";
+увучи "./test.js";
+увучи "./testfolder/hoho.js";
+увучи "./testfolder/test2.js";
 
 
 класа Пиће {

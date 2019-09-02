@@ -58,7 +58,7 @@ let keywordMap = {
 	"у супрoтном": "else",
 	или: "||",
 	и: "&&",
-	увуци: "import"
+	увучи: "import"
 };
 
 var transliterate = function(text) {
@@ -143,17 +143,18 @@ class HelloWorldPlugin {
 				nmf.hooks.beforeResolve.tap(
 					"NormalModuleReplacementPlugin",
 					result => {
+
 						if (!result) return;
+						
 						let pathVar = result.request.replace("src/", "");
 						var pathJoined = path.join(
 							path.resolve(__dirname, "."),
 							"src",
 							pathVar
 						);
-						console.log(pathJoined);
 						let fileCode = fs.readFileSync(pathJoined);
 						let sourceCode = fileCode.toString();
-						console.log(sourceCode);
+						
 						let newCode = Object.keys(keywordMap).reduce(
 							(prev, keyword) => {
 								return prev.replace(
@@ -166,30 +167,30 @@ class HelloWorldPlugin {
 							},
 							" " + sourceCode + " "
 						);
+						
 						var dirname = path.resolve(__dirname, "dist");
-						console.log("BEFOREEEEEEEEEEEEEE");
 						let newPath = path.join(
 							path.resolve(__dirname, "."),
 							"dist",
 							"temp",
 							pathVar
 						);
+						
 						fs.mkdirSync(
 							newPath.replace(
-								"\\" + newPath.split("\\").pop(),
+								"/" + newPath.split("/").pop(),
 								""
 							),
 							{ recursive: true }
 						);
+						
 						fs.writeFileSync(
 							newPath,
 							transliterate(newCode),
 							"utf8"
 						);
-						console.log("BEFOREEEEEEEEEEEEEE2222");
 
 						result.request = newPath;
-						console.log(newPath);
 						return result;
 					}
 				);

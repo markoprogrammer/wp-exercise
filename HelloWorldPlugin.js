@@ -138,10 +138,10 @@ var transliterate = function(text) {
 class HelloWorldPlugin {
 	apply(compiler) {
 		compiler.hooks.normalModuleFactory.tap(
-			"NormalModuleReplacementPlugin",
+			"Plugin1",
 			nmf => {
 				nmf.hooks.beforeResolve.tap(
-					"NormalModuleReplacementPlugin",
+					"Plugin2",
 					result => {
 
 						if (!result) return;
@@ -193,10 +193,6 @@ class HelloWorldPlugin {
 						result.request = newPath;
 						return result;
 					}
-				);
-				nmf.hooks.afterResolve.tap(
-					"NormalModuleReplacementPlugin",
-					result => {}
 				);
 			}
 		);

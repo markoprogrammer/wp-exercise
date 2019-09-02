@@ -25,7 +25,6 @@ let keywordMap = {
 	ово: "this",
 	буде: "=",
 	дохвати: "fetch",
-	пробај: "try",
 	баци: "throw",
 	Грешку: "Error",
 	гурни: "push",

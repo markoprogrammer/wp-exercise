@@ -1,15 +1,14 @@
  import "./test.js";
-import "./testfolder/hoho.js";
-import "./testfolder/test2.js";
+import "./fibonaci/fibonaci.js";
 
 
-class Piћe {
+class Pice {
     constructor () {
         this.naziv = ''
     }
 }
 
-class Kafa extends Piћe {
+class Kafa extends Pice {
     constructor () {
         super();
         this.naziv = 'Kafa'

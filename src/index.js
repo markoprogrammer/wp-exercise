@@ -1,6 +1,5 @@
-увучи "./test.js";
-увучи "./testfolder/hoho.js";
-увучи "./testfolder/test2.js";
+увуци "./test.js";
+увуци "./fibonaci/fibonaci.js";
 
 
 класа Пиће {

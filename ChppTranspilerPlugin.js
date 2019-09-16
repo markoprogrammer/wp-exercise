@@ -57,10 +57,11 @@ let keywordMap = {
 	"у супрoтном": "else",
 	или: "||",
 	и: "&&",
-	увучи: "import"
+	увуци: "import",
+	логуј: "console.log"
 };
 
-var transliterate = function(text) {
+var transliterate = function (text) {
 	text = text
 		.replace(/\u0401/g, "YO")
 		.replace(/\u0419/g, "I")
@@ -129,67 +130,67 @@ var transliterate = function(text) {
 		.replace(/\u0431/g, "b")
 		.replace(/\u044E/g, "yu")
 		.replace(/\u0458/g, "j")
-		.replace("ј", "j");
-
+		.replace(/\u045B/g, "c")
+		.replace(/\u040B/g, "c")
 	return text;
 };
 
-class HelloWorldPlugin {
+const transpileChpp = (sourceCode) => {
+	let newCode = Object.keys(keywordMap).reduce(
+		(prev, keyword) => {
+			return prev.replace(
+				new RegExp(
+					`(\\s|\\(|\\.|\\'|\\"|\\{}|\\=)${keyword}(\\s|\\(|\\.|\\'|\\"|\\{}|\\=|\\)|\\;)`,
+					"g"
+				),
+				`$1${keywordMap[keyword]}$2`
+			);
+		},
+		" " + sourceCode + " "
+	);
+	return newCode;
+}
+
+class ChppTranspilerPlugin {
 	apply(compiler) {
 		compiler.hooks.normalModuleFactory.tap(
-			"Plugin1",
+			"CppTranspilerPlugin normalModuleFactory",
 			nmf => {
 				nmf.hooks.beforeResolve.tap(
-					"Plugin2",
+					"CppTranspilerPlugin beforeResolve",
 					result => {
 
-						if (!result) return;
-						
-						let pathVar = result.request.replace("src/", "");
-						var pathJoined = path.join(
-							path.resolve(__dirname, "."),
-							"src",
-							pathVar
-						);
-						let fileCode = fs.readFileSync(pathJoined);
+						if (!result) {
+							return;
+						}
+
+						let fileRelativePath = result.request.replace("src/", "");
+						var fileAbsolutePath = path.join(path.resolve(__dirname, "."), "src", fileRelativePath);
+						let fileCode = fs.readFileSync(fileAbsolutePath);
 						let sourceCode = fileCode.toString();
-						
-						let newCode = Object.keys(keywordMap).reduce(
-							(prev, keyword) => {
-								return prev.replace(
-									new RegExp(
-										`(\\s|\\(|\\.|\\'|\\"|\\{}|\\=)${keyword}(\\s|\\(|\\.|\\'|\\"|\\{}|\\=|\\)|\\;)`,
-										"g"
-									),
-									`$1${keywordMap[keyword]}$2`
-								);
-							},
-							" " + sourceCode + " "
-						);
-						
-						var dirname = path.resolve(__dirname, "dist");
-						let newPath = path.join(
-							path.resolve(__dirname, "."),
-							"dist",
-							"temp",
-							pathVar
-						);
-						
+
+						//Transpile code to JavaScript
+						let newCode = transpileChpp(sourceCode);
+						newCode = transliterate(newCode)
+
+						let newAbsouletPath = path.join(path.resolve(__dirname, "."), "dist", "temp", fileRelativePath);
+
 						fs.mkdirSync(
-							newPath.replace(
-								"/" + newPath.split("/").pop(),
+							newAbsouletPath.replace(
+								"/" + newAbsouletPath.split("/").pop(),
 								""
-							),
-							{ recursive: true }
+							), {
+								recursive: true
+							}
 						);
-						
+
 						fs.writeFileSync(
-							newPath,
-							transliterate(newCode),
+							newAbsouletPath,
+							newCode,
 							"utf8"
 						);
 
-						result.request = newPath;
+						result.request = newAbsouletPath;
 						return result;
 					}
 				);
@@ -198,4 +199,4 @@ class HelloWorldPlugin {
 	}
 }
 
-module.exports = HelloWorldPlugin;
+module.exports = ChppTranspilerPlugin;
